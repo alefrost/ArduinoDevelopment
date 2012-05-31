@@ -1,0 +1,19 @@
+#!/bin/sh
+
+# This git hook rebuilds the html and pushes it out to gh-pages
+# after a commit has been made to the master branch.
+# Run this command to enable this githook to run:
+#
+# >> chmod a+x <file>
+
+MASTER="master"
+BRANCH=$(git branch --no-color | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/')
+if [ "$BRANCH" == "$MASTER" ]; then
+    cd docs
+    make html
+    cd _build/html
+    git checkout gh-pages
+    git commit -a -m "updating documentation"
+    git push origin gh-pages
+    git checkout master
+fi
